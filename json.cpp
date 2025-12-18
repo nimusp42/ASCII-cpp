@@ -2,55 +2,64 @@
 
 using namespace std;
 
-namespace json {
+namespace json
+{
 
-Node::Node(vector<Node> array)
-    : as_array_(move(array)) {
+Node::Node(vector<Node> array) : as_array_(move(array))
+{
 }
 
-Node::Node(map<string, Node> map)
-    : as_map_(move(map)) {
+Node::Node(map<string, Node> map) : as_map_(move(map))
+{
 }
 
-Node::Node(int value)
-    : as_int_(value) {
+Node::Node(int value) : as_int_(value)
+{
 }
 
-Node::Node(string value)
-    : as_string_(move(value)) {
+Node::Node(string value) : as_string_(move(value))
+{
 }
 
-const vector<Node>& Node::AsArray() const {
+const vector<Node>& Node::AsArray() const
+{
     return as_array_;
 }
 
-const map<string, Node>& Node::AsMap() const {
+const map<string, Node>& Node::AsMap() const
+{
     return as_map_;
 }
 
-int Node::AsInt() const {
+int Node::AsInt() const
+{
     return as_int_;
 }
 
-const string& Node::AsString() const {
+const string& Node::AsString() const
+{
     return as_string_;
 }
 
-Document::Document(Node root)
-    : root_(move(root)) {
+Document::Document(Node root) : root_(move(root))
+{
 }
 
-const Node& Document::GetRoot() const {
+const Node& Document::GetRoot() const
+{
     return root_;
 }
 
 Node LoadNode(istream& input);
 
-Node LoadArray(istream& input) {
+Node LoadArray(istream& input)
+{
     vector<Node> result;
 
-    for (char c; input >> c && c != ']';) {
-        if (c != ',') {
+    for (char c; input >> c && c != ']';)
+    {
+        if (c != ',')
+        {
             input.putback(c);
         }
         result.push_back(LoadNode(input));
@@ -59,21 +68,27 @@ Node LoadArray(istream& input) {
     return Node(move(result));
 }
 
-Node LoadInt(istream& input) {
+Node LoadInt(istream& input)
+{
     int result = 0;
-    while (isdigit(input.peek())) {
+    while (isdigit(input.peek()))
+    {
         result *= 10;
         result += input.get() - '0';
     }
     return Node(result);
 }
 
-Node LoadString(istream& input) {
+Node LoadString(istream& input)
+{
     string line;
     char ch;
-    while (input.get(ch) && ch != '"') {
-        if (ch == '\\') {
-            if (!input.get(ch)) {
+    while (input.get(ch) && ch != '"')
+    {
+        if (ch == '\\')
+        {
+            if (!input.get(ch))
+            {
                 break;
             }
         }
@@ -83,11 +98,14 @@ Node LoadString(istream& input) {
     return Node(move(line));
 }
 
-Node LoadDict(istream& input) {
+Node LoadDict(istream& input)
+{
     map<string, Node> result;
 
-    for (char c; input >> c && c != '}';) {
-        if (c == ',') {
+    for (char c; input >> c && c != '}';)
+    {
+        if (c == ',')
+        {
             input >> c;
         }
 
@@ -99,24 +117,33 @@ Node LoadDict(istream& input) {
     return Node(move(result));
 }
 
-Node LoadNode(istream& input) {
+Node LoadNode(istream& input)
+{
     char c;
     input >> c;
 
-    if (c == '[') {
+    if (c == '[')
+    {
         return LoadArray(input);
-    } else if (c == '{') {
+    }
+    else if (c == '{')
+    {
         return LoadDict(input);
-    } else if (c == '"') {
+    }
+    else if (c == '"')
+    {
         return LoadString(input);
-    } else {
+    }
+    else
+    {
         input.putback(c);
         return LoadInt(input);
     }
 }
 
-Document Load(istream& input) {
+Document Load(istream& input)
+{
     return Document{LoadNode(input)};
 }
 
-}
+} // namespace json

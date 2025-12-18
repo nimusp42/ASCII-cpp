@@ -6,9 +6,11 @@
 #include <unordered_map>
 #include <vector>
 
-namespace json {
+namespace json
+{
 
-class Node {
+class Node
+{
 public:
     explicit Node(std::vector<Node> array);
     explicit Node(std::map<std::string, Node> map);
@@ -27,7 +29,8 @@ private:
     std::string as_string_;
 };
 
-class Document {
+class Document
+{
 public:
     explicit Document(Node root);
 
@@ -39,4 +42,4 @@ private:
 
 Document Load(std::istream& input);
 
-}
+} // namespace json

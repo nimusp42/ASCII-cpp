@@ -8,8 +8,7 @@
 namespace plotter
 {
 
-Plotter::Plotter(std::unique_ptr<Canvas> canvas)
-    : canvas_(std::move(canvas))
+Plotter::Plotter(std::unique_ptr<Canvas> canvas) : canvas_(std::move(canvas))
 {
     if (!canvas_)
     {
@@ -22,12 +21,14 @@ Plotter::Plotter(int width, int height, char background_char)
 {
 }
 
-void Plotter::DrawLine(const int x1, const int y1, const int x2, const int y2, const char brush)
+void Plotter::DrawLine(const int x1, const int y1, const int x2, const int y2,
+                       const char brush)
 {
     DrawLineBresenham(x1, y1, x2, y2, brush);
 }
 
-void Plotter::DrawRectangle(const int x1, const int y1, const int x2, const int y2, const char brush, const bool fill)
+void Plotter::DrawRectangle(const int x1, const int y1, const int x2,
+                            const int y2, const char brush, const bool fill)
 {
     if (fill)
     {
@@ -42,8 +43,9 @@ void Plotter::DrawRectangle(const int x1, const int y1, const int x2, const int 
     }
 }
 
-void Plotter::DrawTriangle(const int x1, const int y1, const int x2, const int y2, const int x3, const int y3,
-    const char brush, const bool fill)
+void Plotter::DrawTriangle(const int x1, const int y1, const int x2,
+                           const int y2, const int x3, const int y3,
+                           const char brush, const bool fill)
 {
     if (fill)
     {
@@ -57,7 +59,8 @@ void Plotter::DrawTriangle(const int x1, const int y1, const int x2, const int y
     }
 }
 
-void Plotter::DrawCircle(const int center_x, const int center_y, const int radius, const char brush, const bool fill)
+void Plotter::DrawCircle(const int center_x, const int center_y,
+                         const int radius, const char brush, const bool fill)
 {
     if (fill)
     {
@@ -119,7 +122,8 @@ std::map<char, int> Plotter::ColorHistogram() const
     return ColorHistogram(0, 0, canvas_->Width() - 1, canvas_->Height() - 1);
 }
 
-std::map<char, int> Plotter::ColorHistogram(const int x1, const int y1, const int x2, const int y2) const
+std::map<char, int> Plotter::ColorHistogram(const int x1, const int y1,
+                                            const int x2, const int y2) const
 {
     std::map<char, int> histogram;
 
@@ -138,11 +142,12 @@ std::map<char, int> Plotter::ColorHistogram(const int x1, const int y1, const in
     return histogram;
 }
 
-std::pair<char, char> Plotter::MinMaxColors(const std::map<char, int>& color_weights)
+std::pair<char, char>
+Plotter::MinMaxColors(const std::map<char, int>& color_weights)
 {
     if (color_weights.empty())
     {
-        return { ' ', ' ' };
+        return {' ', ' '};
     }
 
     char min_color = color_weights.begin()->first;
@@ -164,10 +169,11 @@ std::pair<char, char> Plotter::MinMaxColors(const std::map<char, int>& color_wei
         }
     }
 
-    return { min_color, max_color };
+    return {min_color, max_color};
 }
 
-std::unique_ptr<Canvas> Plotter::ExtractRegion(const int x1, const int y1, const int x2, const int y2) const
+std::unique_ptr<Canvas> Plotter::ExtractRegion(const int x1, const int y1,
+                                               const int x2, const int y2) const
 {
     int width = x2 - x1 + 1;
     int height = y2 - y1 + 1;
@@ -206,7 +212,8 @@ void Plotter::PasteRegion(const Canvas& region, const int x, const int y)
     }
 }
 
-void Plotter::DrawLineBresenham(int x1, int y1, const int x2, const int y2, const char brush)
+void Plotter::DrawLineBresenham(int x1, int y1, const int x2, const int y2,
+                                const char brush)
 {
     int dx = std::abs(x2 - x1);
     int dy = std::abs(y2 - y1);
@@ -238,10 +245,12 @@ void Plotter::DrawLineBresenham(int x1, int y1, const int x2, const int y2, cons
     }
 }
 
-void Plotter::DrawCircleBresenham(const int center_x, const int center_y, const int radius, const char brush)
+void Plotter::DrawCircleBresenham(const int center_x, const int center_y,
+                                  const int radius, const char brush)
 {
 
-    auto draw_circle_points = [&](const int cx, const int cy, const int x, const int y)
+    auto draw_circle_points =
+        [&](const int cx, const int cy, const int x, const int y)
     {
         if (canvas_->InBounds(cx + x, cy + y))
             (*canvas_)(cx + x, cy + y) = brush;
@@ -283,17 +292,17 @@ void Plotter::DrawCircleBresenham(const int center_x, const int center_y, const 
     }
 }
 
-void Plotter::FillTriangle(int x1, int y1, int x2, int y2, int x3, int y3, const char brush) const
+void Plotter::FillTriangle(int x1, int y1, int x2, int y2, int x3, int y3,
+                           const char brush) const
 {
-    const int min_x = std::min({ x1, x2, x3 });
-    const int max_x = std::max({ x1, x2, x3 });
-    const int min_y = std::min({ y1, y2, y3 });
-    const int max_y = std::max({ y1, y2, y3 });
+    const int min_x = std::min({x1, x2, x3});
+    const int max_x = std::max({x1, x2, x3});
+    const int min_y = std::min({y1, y2, y3});
+    const int max_y = std::max({y1, y2, y3});
 
-    auto edge_function = [](const int x1_, const int y1_, const int x2_, const int y2_, const int x, const int y)
-    {
-        return (x - x1_) * (y2_ - y1_) - (y - y1_) * (x2_ - x1_);
-    };
+    auto edge_function = [](const int x1_, const int y1_, const int x2_,
+                            const int y2_, const int x, const int y)
+    { return (x - x1_) * (y2_ - y1_) - (y - y1_) * (x2_ - x1_); };
 
     for (int y = min_y; y <= max_y; ++y)
     {
@@ -385,14 +394,16 @@ void Plotter::ScanlineFill(const int x, const int y, const char fill_brush)
 
             // Находим начало нового отрезка
             int new_x_start = current_x;
-            while (new_x_start > 0 && canvas_->at(new_x_start - 1, current_y) == target_brush)
+            while (new_x_start > 0 &&
+                   canvas_->at(new_x_start - 1, current_y) == target_brush)
             {
                 new_x_start--;
             }
 
             // Находим конец отрезка
             int new_x_end = current_x;
-            while (new_x_end < canvas_->Width() - 1 && canvas_->at(new_x_end + 1, current_y) == target_brush)
+            while (new_x_end < canvas_->Width() - 1 &&
+                   canvas_->at(new_x_end + 1, current_y) == target_brush)
             {
                 new_x_end++;
             }
@@ -414,7 +425,8 @@ void Plotter::ScanlineFill(const int x, const int y, const char fill_brush)
                     if (canvas_->at(above_x, above_y) == target_brush)
                     {
                         int above_start = above_x;
-                        while (above_x <= new_x_end && canvas_->at(above_x, above_y) == target_brush)
+                        while (above_x <= new_x_end &&
+                               canvas_->at(above_x, above_y) == target_brush)
                         {
                             above_x++;
                         }
@@ -437,7 +449,8 @@ void Plotter::ScanlineFill(const int x, const int y, const char fill_brush)
                     if (canvas_->at(below_x, below_y) == target_brush)
                     {
                         int below_start = below_x;
-                        while (below_x <= new_x_end && canvas_->at(below_x, below_y) == target_brush)
+                        while (below_x <= new_x_end &&
+                               canvas_->at(below_x, below_y) == target_brush)
                         {
                             below_x++;
                         }
