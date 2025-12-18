@@ -11,6 +11,16 @@ std::vector<char> GrayscalePlotter::DefaultPalette()
     return { ' ', '.', ':', '-', '=', '+', '*', '#', '%', '@' };
 }
 
+GrayscalePlotter::GrayscalePlotter(std::unique_ptr<Canvas> canvas, const std::vector<char>& palette) 
+: Plotter(std::move(canvas))
+, palette_(palette) 
+{}
+
+GrayscalePlotter::GrayscalePlotter(int width, int height, char background_char, const std::vector<char>& palette) 
+: Plotter(width, height, background_char)
+, palette_(palette) 
+{}
+
 void GrayscalePlotter::DrawLine(const int x1, const int y1, const int x2, const int y2, const double brightness)
 {
     Plotter::DrawLine(x1, y1, x2, y2, BrightnessToChar(brightness));
@@ -98,7 +108,7 @@ double GrayscalePlotter::CalculateAverageBrightness()
         const double brightness = static_cast<double>(i) / (palette_.size() - 1);
         char_to_brightness[palette_[i]] = brightness;
     }
-    for (auto& pixel : GetCanvas())
+    for (auto pixel : GetCanvas())
     {
         if (const auto it = char_to_brightness.find(pixel); it != char_to_brightness.end())
         {
@@ -232,6 +242,11 @@ void GrayscalePlotter::InvertBrightness()
             }
         }
     }
+}
+
+char GrayscalePlotter::BrightnessToChar(double brightness) const {
+    int idx = brightness * (palette_.size() - 1);
+    return palette_[idx];
 }
 
 double GrayscalePlotter::GetPixelBrightness(const int x, const int y) const

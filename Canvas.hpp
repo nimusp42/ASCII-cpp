@@ -49,8 +49,9 @@ private:
     int width_;
     int height_;
     char background_;
-    // Добавьте контейнер для хранения данных
+    std::vector<char> data_;
 
+    size_t CalculateShift(int x, int y) const;
 };
 
 } // namespace plotter

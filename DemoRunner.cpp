@@ -2,6 +2,7 @@
 #include "PlotterFactory.hpp"
 #include <fstream>
 #include <iostream>
+#include <chrono>
 
 namespace plotter
 {
@@ -239,10 +240,15 @@ void DemoRunner::CompareFillAlgorithms()
     ss << "\nInitial canvas: \n";
     plotter1.Render(ss);
 
-    // Измерьте время выполнения заливки двумя методами
+    auto start = std::chrono::high_resolution_clock::now();
     plotter1.FloodFill(10, 10, 'F');
+    auto end = std::chrono::high_resolution_clock::now();
+    auto floodfill_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
+    start = std::chrono::high_resolution_clock::now();
     plotter2.ScanlineFill(10, 10, 'S');
+    end = std::chrono::high_resolution_clock::now();
+    auto scanline_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
     ss << "FloodFill time: " << floodfill_time << " microseconds\n";
     ss << "ScanlineFill time: " << scanline_time << " microseconds\n";
