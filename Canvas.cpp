@@ -1,6 +1,8 @@
 #include "Canvas.hpp"
 #include "CanvasIterators.hpp"
 #include <algorithm>
+#include <cassert>
+#include <exception>
 #include <fstream>
 
 namespace plotter
@@ -10,6 +12,12 @@ Canvas::Canvas(int width, int height, char background_char)
     : width_(width), height_(height), background_(background_char),
       data_(std::vector<char>(width * height, background_char))
 {
+    if (width < 0 || height < 0)
+    {
+        throw std::runtime_error(
+            "negative params are forbidden, width: " + std::to_string(width) +
+            ", height: " + std::to_string(height));
+    }
 }
 
 Canvas::Canvas(Canvas&& other) noexcept
@@ -190,7 +198,11 @@ Canvas::PixelIterator Canvas::end()
 
 size_t Canvas::CalculateShift(int x, int y) const
 {
-    return x + y * Width();
+    assert(x >= 0);
+    assert(y >= 0);
+    size_t shift = x + y * Width();
+    assert(shift < Size());
+    return shift;
 }
 
 } // namespace plotter

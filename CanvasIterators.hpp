@@ -1,5 +1,6 @@
 #pragma once
 #include "Canvas.hpp"
+#include <cassert>
 
 namespace plotter
 {
@@ -76,7 +77,7 @@ public:
 
     bool operator<=(const RowIterator& other) const
     {
-        return *this < other || *this == other;
+        return !(other < *this);
     }
 
     bool operator>(const RowIterator& other) const
@@ -86,7 +87,7 @@ public:
 
     bool operator>=(const RowIterator& other) const
     {
-        return other < *this || *this == other;
+        return !(*this < other);
     }
 
 private:
@@ -167,7 +168,7 @@ public:
 
     bool operator<=(const ColumnIterator& other) const
     {
-        return *this < other || *this == other;
+        return !(other < *this);
     }
 
     bool operator>(const ColumnIterator& other) const
@@ -177,7 +178,7 @@ public:
 
     bool operator>=(const ColumnIterator& other) const
     {
-        return other < *this || *this == other;
+        return !(*this < other);
     }
 
 private:
@@ -205,7 +206,9 @@ public:
 
     char& operator[](int shift) const
     {
-        return canvas_->data_[pos_ + shift];
+        size_t idx = pos_ + shift;
+        assert(idx >= 0 && idx < canvas_->Size());
+        return canvas_->data_[idx];
     }
 
     PixelIterator& operator++()
@@ -257,7 +260,7 @@ public:
 
     bool operator<=(const PixelIterator& other) const
     {
-        return *this < other || *this == other;
+        return !(other < *this);
     }
 
     bool operator>(const PixelIterator& other) const
@@ -267,7 +270,7 @@ public:
 
     bool operator>=(const PixelIterator& other) const
     {
-        return other < *this || *this == other;
+        return !(*this < other);
     }
 
 private:
